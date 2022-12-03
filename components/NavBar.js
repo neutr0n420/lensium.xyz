@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
+import { ethers, Wallet } from 'ethers'
 import {
   client, challenge, authenticate, getDefaultProfile,
   signCreatePostTypedData, lensHub, splitSignature, validateMetadata
@@ -123,7 +123,7 @@ export default function Navbar() {
     const metaData = {
       version: '2.0.0',
       content: postData,
-      description: postData,
+      description: "JUst a test",
       name: `Post by @${handle}`,
       external_url: `https://lenster.xyz/u/${handle}`,
       metadata_id: uuid(),
@@ -141,6 +141,7 @@ export default function Navbar() {
     console.log('Metadata verification request: ', result)
 
     const added = await ipfsClient.add(JSON.stringify(metaData))
+    console.log(added.path);
     return added
   }
   function onChange(e) {
@@ -188,15 +189,18 @@ export default function Navbar() {
             <input type="text" id="search-navbar" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." />
           </div>
           <div>
-            <button onClick={login} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</button>
+            <button onClick={login} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Connect </button>
             {
         address && session && (
           <div>
-            <textarea
+            <textarea class="w-96"
               onChange={onChange}
             />
-            <button onClick={createPost}>Create Post</button>
+           
+             <button onClick={createPost} type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Post</button>
+             
           </div>
+
         )
       }
           </div>
