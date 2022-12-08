@@ -2,16 +2,6 @@ import { useEffect, useState } from 'react'
 
 
 export default function Blogs() {
-  const [postData, setPostData] = useState('')
-let blogs2;
-    async function getBlogs() {
-        const chunks = [];
-        const blogs = await fetch("https://ipfs.filebase.io/ipfs/QmdQ9fJkNMSbZzWzbamyG4DtkBeGX4cN4fXN2B7JFPrGTD");
-         blogs2 = await blogs.json()
-        console.log(blogs2.content);
-        setPostData(blogs2.content)
-      }
-      getBlogs()
 
     return (
         
@@ -27,7 +17,7 @@ let blogs2;
                     <div tabindex="0" class="focus:outline-none" aria-label="card 1">
                         <img role="img" aria-label="code editor" tabindex="0" class="focus:outline-none w-full" src="https://cdn.tuk.dev/assets/components/111220/Blg-6/blog(1).png" alt="code editor" />
                         <div class="py-4 px-8 w-full flex justify-between bg-indigo-700">
-                            <p  tabindex="0" class="focus:outline-none text-sm text-white font-semibold tracking-wide">Bruce Wayne{postData}</p>
+                            <p  tabindex="0" class="focus:outline-none text-sm text-white font-semibold tracking-wide">Bruce Wayne</p>
                             <p tabindex="0" class="focus:outline-none text-sm text-white font-semibold tracking-wide">13TH Oct, 2020</p>
                         </div>
                         <div class="bg-white dark:bg-gray-800 px-10 py-6 rounded-bl-3xl rounded-br-3xl">

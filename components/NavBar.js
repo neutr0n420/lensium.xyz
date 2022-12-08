@@ -32,6 +32,19 @@ export default function Navbar() {
   useEffect(() => {
     checkConnection()
   }, [])
+  async function connect() {
+    const accounts = await window.ethereum.send('eth_requestAccounts')
+    if (accounts.result.length) {
+      setAddress(accounts.result[0])
+      const response = await client.query({
+        query: getDefaultProfile,
+        variables: { address: accounts[0] }
+      })
+      setProfileId(response.data.defaultProfile.id)
+      setHandle(response.data.defaultProfile.handle)
+
+    }
+  }
   async function checkConnection() {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const accounts = await provider.listAccounts()
@@ -44,7 +57,8 @@ export default function Navbar() {
       setProfileId(response.data.defaultProfile.id)
       setHandle(response.data.defaultProfile.handle)
     }
-  } async function login() {
+  }
+  async function login() {
     try {
       const challengeInfo = await client.query({
         query: challenge,
@@ -71,18 +85,7 @@ export default function Navbar() {
       console.log('Error signing in: ', err)
     }
   }
-  async function connect() {
-    const account = await window.ethereum.send('eth_requestAccounts')
-    if (account.result.length) {
-      setAddress(account.result[0])
-      const response = await client.query({
-        query: getDefaultProfile,
-        variables: { address: accounts[0] }
-      })
-      setProfileId(response.data.defaultProfile.id)
-      setHandle(response.data.defaultProfile.handle)
-    }
-  }
+
   async function createPost() {
     if (!postData) return
     const ipfsData = await uploadToIPFS()
@@ -148,13 +151,6 @@ export default function Navbar() {
     setPostData(e.target.value)
   }
 
-  async function getBlogs() {
-    const chunks = [];
-    const blogs = await fetch("https://ipfs.filebase.io/ipfs/QmdQ9fJkNMSbZzWzbamyG4DtkBeGX4cN4fXN2B7JFPrGTD");
-    const blogs2 = await blogs.json()
-    console.log(blogs2);
-  }
-
   return (
 
 
@@ -188,21 +184,35 @@ export default function Navbar() {
             </div>
             <input type="text" id="search-navbar" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." />
           </div>
-          <div>
-            <button onClick={login} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Connect </button>
-            {
-        address && session && (
-          <div>
-            <textarea class="w-96"
-              onChange={onChange}
-            />
-           
-             <button onClick={createPost} type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Post</button>
-             
-          </div>
 
-        )
-      }
+
+
+          <div>
+            {!address && (
+              <div onClick={connect}>
+                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">connect </button>
+
+              </div>
+            )}
+            {address && !session && (
+              <div onClick={login}>
+                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">login </button>
+
+              </div>
+            )}
+            {
+              address && session && (
+                <div>
+                  <textarea class="w-96"
+                    onChange={onChange}
+                  />
+
+                  <button onClick={createPost} type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Post</button>
+
+                </div>
+
+              )
+            }
           </div>
 
           <ul class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
